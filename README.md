@@ -1,179 +1,489 @@
-<h1 align="center">PROTO//GREEN</h1>
-
 <p align="center">
-  <b>A green protogen Hyprland rice.</b><br>
-  Hand-written Quickshell visor bar · live recolour engine · optional local AI pet.<br>
-  <sub>Daily driver on CachyOS — not a demo, not a screenshot build.</sub>
+  <img src="demo/banner.png" alt="PROTO//GREEN — Hyprland · Quickshell visor bar · live theme engine">
 </p>
 
 <p align="center">
-  <img src="demo/preview.gif" width="640" alt="PROTO//GREEN desktop preview">
+  <img alt="Hyprland 0.56.2" src="https://img.shields.io/badge/Hyprland-0.56.2-2ea043?style=for-the-badge&labelColor=0d1117">
+  <img alt="Quickshell 0.3.1" src="https://img.shields.io/badge/Quickshell-0.3.1-56d4dd?style=for-the-badge&labelColor=0d1117">
+  <img alt="Arch / CachyOS" src="https://img.shields.io/badge/Arch_%7C_CachyOS-1793d1?style=for-the-badge&labelColor=0d1117">
+  <img alt="MIT" src="https://img.shields.io/badge/MIT-7ee787?style=for-the-badge&labelColor=0d1117">
 </p>
 
 <p align="center">
-  <a href="demo/protogreen-demo.mp4"><b>▶ full demo video</b></a> · 49 s, 1080p
+  <img src="demo/preview.gif" width="720" alt="PROTO//GREEN desktop preview">
 </p>
 
 <p align="center">
-  <img alt="Hyprland 0.56" src="https://img.shields.io/badge/Hyprland-0.56-2ea043?style=flat-square">
-  <img alt="Quickshell 0.3" src="https://img.shields.io/badge/Quickshell-0.3-56d4dd?style=flat-square">
-  <img alt="Arch / CachyOS" src="https://img.shields.io/badge/Arch%20%7C%20CachyOS-1793d1?style=flat-square">
-  <img alt="MIT" src="https://img.shields.io/badge/licence-MIT-7ee787?style=flat-square">
+  <a href="demo/protogreen-demo.mp4"><b>▶ full demo video</b></a> — 49 s, 1080p
 </p>
 
 ---
 
-## Why this one is different
+A green protogen rice for Hyprland, running as my daily driver on CachyOS. The bar is not
+waybar with nicer colours — it's `protogreen`, a Quickshell shell I wrote from scratch: a
+visor whose face reacts to what the machine is doing, a HUD, a theme panel that recolours
+fifteen config files at once, and a small assistant that can actually drive the desktop.
 
-Most rices are a waybar config with nice colours. This one replaces the bar entirely:
-**`protogreen`**, a Quickshell (QML) shell written from scratch — a protogen visor whose
-face reacts to what the machine is doing, an eye that tracks, a HUD, a theme panel that
-recolours every app at once, and a small assistant that can actually drive the desktop.
+waybar is still in here as a fallback, one keybind away, because a bar you wrote yourself
+breaks in ways a packaged one doesn't.
 
-<table>
-<tr><td width="50%"><img src="demo/shot-desktop.png" alt="desktop with fastfetch and cava"></td>
-<td width="50%"><img src="demo/shot-launcher.png" alt="rofi launcher"></td></tr>
-</table>
+---
 
-## Stack
+## ⚡ Grab it
 
-| | |
-|---|---|
-| **Compositor** | Hyprland 0.56.2 |
-| **Shell / bar** | Quickshell 0.3.1 — `config/quickshell/protogreen`, 34 QML files |
-| **Fallback bar** | waybar (`SUPER+SHIFT+B` swaps live) |
-| **Launcher** | rofi · **Terminal** kitty · **Files** thunar |
-| **Notifications** | dunst · **Lock / idle** hyprlock + hypridle |
-| **Wallpaper** | mpvpaper (animated) → hyprpaper / awww (static) |
-| **Palette** | bg `#0d1117` · green `#2ea043` · sage `#7ee787` · teal `#56d4dd` |
-| **Built on** | CachyOS · i5-11400H · Intel UHD + RTX 2050 hybrid · 1080p144 |
-
-## Features
-
-### 🟩 The visor bar
-`Bar.qml` · `VisorEye.qml` · `MoodFace.qml` — workspaces, media, tray, CPU/GPU/temps,
-cava spectrum, battery, power profile. The face changes with system state; the eye
-follows the pointer.
-
-### 🎨 Live theme engine
-`SUPER+SHIFT+T`. Pick a colour on the wheel and `scripts/theme_apply.py` rewrites
-Hyprland borders, the bar, waybar, rofi, dunst, kitty, cava, fastfetch and GTK — no file
-editing, no relog.
-
-### 🤖 Pip — optional assistant
-`SUPER+A`. Two halves, and **only the second needs anything installed**:
-
-- **Commands** — open apps, switch workspaces, volume, brightness, screenshots, lock.
-  Pattern matching in QML, zero dependencies, works on any machine.
-- **Chat** — a local [ollama](https://ollama.com) model (`llama3.2:3b`), with a scraped
-  DuckDuckGo lookup when the model admits it is unsure. ~2 GB download, ~4 GB RAM while
-  answering, runs on CPU. No API key. Nothing leaves the machine except that search.
-
-Skip ollama and everything else is untouched — the popup just says chat needs it.
-
-### 📊 HUD
-`SUPER+D`. Full-screen dashboard: sensors, toggles, tools.
-
-### 🔋 One power & wallpaper authority
-`scripts/power-watch.sh` polls every 3 s. Game starts → animated wallpaper swaps to a
-frozen frame (frees the iGPU, kills the compositor stutter). On battery → power-saver
-profile + static wallpaper. On AC → balanced + animated. One script decides, instead of
-three fighting each other.
-
-### 🖱️ Extras
-Wayland-safe autoclicker through `/dev/uinput` (`F8`), crosshair overlay (`F4`),
-screenshot pipeline with satty annotation, UI sound pack on window events, wallpaper
-converter for Wallpaper Engine scenes.
-
-## Install
-
-Arch / CachyOS.
+Arch or CachyOS:
 
 ```bash
-git clone https://github.com/rostikcermak-pixel/protogreen.git
+git clone https://github.com/WafflingNinja/protogreen.git
 cd protogreen
 bash install.sh
 ```
 
-`install.sh` asks before every step. It:
+The installer asks before every single step, backs up whatever is already in `~/.config`,
+and never overwrites anything in place. Full detail in [Install](#-install) further down.
 
-1. installs the packages (one `pacman` call, listed before it runs),
-2. **renames** anything already in `~/.config` to `<name>.bak-<date>` — nothing is
-   overwritten,
-3. copies the configs in and rewrites the baked-in absolute paths to your `$HOME`,
-4. offers two optional extras: `linux-wallpaperengine-git` (AUR, only for converting new
-   Wallpaper Engine scenes) and ollama + the model (only for Pip's chat).
+---
 
-Files are copied, not symlinked — edit them freely afterwards.
+## 🖼 Gallery
+
+<p align="center">
+  <img src="demo/shot-desktop.png" width="90%" alt="fastfetch and cava on the animated protogen wallpaper">
+  <br><sub>fastfetch + cava, animated wallpaper behind</sub>
+</p>
+
+<p align="center">
+  <img src="demo/shot-launcher.png" width="49%" alt="rofi launcher, blurred">
+  <img src="demo/shot-clean.png" width="49%" alt="clean desktop with the visor bar">
+  <br><sub>rofi (blurred layer) · bare desktop, bar at the top</sub>
+</p>
+
+> The HUD, theme panel and Pip aren't in the demo video — it predates them. The QML is in
+> `config/quickshell/protogreen/` if you want to see what they do before installing.
+
+---
+
+## 🟩 Visor online — what it actually is
+
+### The bar
+
+`Bar.qml` · `VisorEye.qml` · `MoodFace.qml` · `components/`
+
+A protogen visor pinned to the top of the screen. Left to right: workspaces, media,
+tray, CPU/GPU load and temps, a cava spectrum, battery, power profile, clock. The face in
+the middle changes expression with system state, and the eye tracks.
+
+Everything is a QML component (`Island.qml`, `VolumePill.qml`, `BatteryPill.qml`,
+`MediaPill.qml`, `Tray.qml`, `Clock.qml`, …) so a module is ~40 lines, not a jsonc entry
+and a CSS selector in two different files.
+
+**Why not waybar:** waybar modules are text. A face that reacts, an eye that follows the
+cursor and a spectrum analyser are not text. Quickshell gives you actual QML — animations,
+shaders, canvas — with Wayland layer-shell handled for you.
+
+### 🎨 Live theme engine
+
+`ThemePanel.qml` + `components/ColorWheel.qml` + `scripts/theme_apply.py` — `SUPER+SHIFT+T`
+
+Pick a colour on a wheel. Everything follows: Hyprland borders, the visor bar, waybar,
+rofi, dunst, kitty, cava, fastfetch, GTK3, GTK4, hyprlock, even the keyboard backlight.
+No file editing, no relog, no separate "pywal but for X" per app.
+
+Fifteen files are under management:
+
+```
+kitty/kitty.conf · kitty/theme.conf · dunst/dunstrc · rofi/config.rasi
+rofi/powermenu.rasi · waybar/style.css · hypr/hyprlock.conf · cava/protogreen.conf
+fastfetch/config.jsonc · gtk-3.0/{gtk,colors,thunar}.css · gtk-4.0/{gtk,colors,gtk-dark}.css
+```
+
+### 🤖 Pip — the optional assistant
+
+`Assistant.qml` · `AssistantPopup.qml` · `assistant/` — `SUPER+A`
+
+A small popup with a protogen personality. Two halves, and **only the second needs
+anything installed**:
+
+| half | what it does | needs |
+|---|---|---|
+| **Commands** | open apps, switch workspaces, volume, brightness, night light, screenshots, lock | nothing |
+| **Chat** | free conversation, with a web lookup when it's unsure | ollama + a 2 GB model |
+
+Skip ollama and the rest of the rice doesn't notice. The popup answers *"no model here —
+chat needs ollama running"* and keeps doing commands.
+
+No API key anywhere. Nothing is sent off the machine except the DuckDuckGo query, and only
+when the model itself admits it doesn't know.
+
+### 📊 HUD
+
+`Hud.qml` — `SUPER+D`
+
+Full-screen dashboard: sensors, toggles (wifi, bluetooth, night light, autoclicker,
+crosshair, theme panel, steam-idler), quick tools. Blurred layer; `SUPER+D` again closes it.
+
+### 🔋 Power and wallpaper, decided by one script
+
+`scripts/power-watch.sh`
+
+- **Game starts** → animated wallpaper is dropped, a frozen frame takes its place. Frees
+  the iGPU behind windowed games.
+- **On battery** → power-saver profile, static wallpaper (~212 MB and a chunk of iGPU
+  render saved).
+- **On AC** → balanced profile, animated wallpaper back.
+- **Manual profile pick from the bar** → the script keeps its hands off the profile until
+  you clear it.
+
+### 🖱 Extras
+
+- **Autoclicker** (`F8`) — works in fullscreen games under Wayland.
+- **Crosshair overlay** (`F4`) — for games that don't draw one.
+- **Screenshots** (`SUPER+SHIFT+S/W`, `Print`) — region / window / full, straight into
+  satty for annotation.
+- **Sound pack** — short blips on window open, close and workspace switch.
+- **Wallpaper converter** — turns a Wallpaper Engine scene into a looping mp4.
+- **Showcase mode** (`SUPER+SHIFT+A`) — fastfetch banner + green cava, for screenshots.
+
+---
+
+## 🔧 Under the hood
+
+The parts I'd actually want someone to read.
+
+### 1. One authority for wallpaper and power
+
+Three scripts each deciding "should the wallpaper be animated right now" is how you get a
+black desktop. `power-watch.sh` is the only thing allowed to touch the wallpaper or the
+power profile. It polls every 3 s, computes the desired state, and acts **only when that
+state changes**.
+
+Details that cost me real debugging:
+
+- **Game detection excludes the Steam client.** Matching `pressure-vessel` or
+  `steamwebhelper` means the wallpaper vanishes whenever Steam is merely open. The match
+  is `reaper SteamLaunch` and `gamescope` — an actual launch.
+- **`proton` is not in the regex** on purpose: it substring-matches `protogreen`, my own
+  bar, and the wallpaper would never come back.
+- **The probe is cached per tick.** Game state is asked three times a tick (apply + two
+  self-heals); that was three `pgrep | grep` pairs every 3 s, forever, for one answer.
+- **mpvpaper is force-restarted, not trusted.** It can survive as a process with a dead
+  GL/vaapi context after the dGPU gets hammered — `pgrep` sees it alive, the self-heal
+  never fires, and the screen just stays black.
+- **`hyprctl reload` on leaving a game.** Game launchers turn animations off and restore
+  them from an EXIT trap that never runs if the game is SIGKILLed. A reload puts every
+  keyword back, whichever launcher died.
+
+### 2. The frozen-frame trick
+
+Killing the animated wallpaper during games would leave a black desktop, which looks
+broken rather than paused. Instead `ffmpeg` pulls one frame from whatever video is current
+and `awww` draws it on the background layer, then does nothing per-frame.
+
+The frame is cached under a key of `path + mtime`, so re-rendering the wallpaper or
+swapping it from the theme panel produces a new cache entry automatically, and falls back
+to the static PNG if ffmpeg isn't installed.
+
+### 3. Autoclicker through `/dev/uinput`
+
+`xdotool` doesn't work under Wayland, and compositor-level injection doesn't reach
+fullscreen games. So `scripts/autoclicker.py` creates a **virtual input device** with
+`evdev`'s `UInput` — events enter at the kernel level, the same path a real mouse takes,
+below the compositor entirely.
+
+That means it lands in the focused window, on any workspace, fullscreen games included.
+It has a self-test (`--selftest`, uses F13 so nothing breaks), configurable cps, hold
+time, jitter, double-click and repeat, and a pidfile so running it again toggles it off.
+Needs your user in the `input` group; the script says so instead of failing cryptically.
+
+### 4. Pip routes with regex, not with the model
+
+Small models are good at warm conversational prose and **bad at classification**. So Pip
+never asks the model what you meant:
+
+```
+send(text)
+  ├─ _route(text)  → regex match → run the desktop action, canned reply, DONE (no LLM)
+  └─ no match      → send to ollama for prose
+                      └─ reply "sounds unsure"? → DuckDuckGo → re-answer from results
+```
+
+The unsure-detector is one regex over the model's own words (`I'm not sure`,
+`as of my last update`, `may have changed`, …). The model doesn't decide to search; it
+just talks, and being honest about not knowing is what triggers the lookup.
+
+That split is also why the command half needs no model at all.
+
+### 5. Blur policy
+
+Blur on the bar looks great and costs a re-blur **every frame**, because a persistent
+surface over a video wallpaper never stops changing. That was most of the choppiness.
+
+So: blur is enabled for rofi, notifications and the HUD — transient surfaces that only
+cost while they're visible — and disabled for bars and windows. Opacity does the rest.
+
+### 6. Wallpaper pipeline
+
+`scripts/wpconvert.sh` · `wpseam.sh` · `wpscan.py`
+
+Running `linux-wallpaperengine` live costs far more than playing a video, so each scene is
+rendered to an mp4 **once** and mpvpaper loops it forever.
+
+- The bar is taken down and an empty workspace selected during capture, because
+  wallpaper-engine draws to the wallpaper layer and anything floating above it gets baked
+  in. An EXIT trap restores all of it — installed *before* the first state change, so
+  Ctrl-C and crashes are covered too.
+- `wf-recorder` produces variable framerate; a second pass forces CFR, because mpvpaper
+  looping a VFR file drifts audibly out of step with itself.
+- Scenes aren't periodic, so there's no true loop point. The tail is cross-faded back over
+  the head, turning a hard jump into a short dissolve. `wpseam.sh` extracts the two frames
+  that meet at the seam and shows them side by side so you can nudge the trim until they
+  match.
+
+### 7. Sound listener over Hyprland's IPC socket
+
+No polling, no plugin:
+
+```bash
+socat -U - UNIX-CONNECT:"$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" \
+  | while read -r line; do case "$line" in
+      openwindow\>\>*)  "$PLAY" open ;;
+      closewindow\>\>*) "$PLAY" close ;;
+      workspace\>\>*)   "$PLAY" workspace 150 ;;
+    esac; done
+```
+
+Hyprland pushes events, the shell reacts. That's the whole thing.
+
+### 8. Hybrid GPU choices
+
+Laptop with Intel UHD driving the panel and an RTX 2050 for games:
+
+- `LIBVA_DRIVER_NAME=iHD` — the panel is Intel-driven, so **video decode belongs on the
+  iGPU**. NVIDIA's libva fell back to *software* decode here: slower, and it woke the dGPU
+  for every video = battery gone.
+- `__GLX_VENDOR_LIBRARY_NAME=nvidia` stays, because Xwayland games do want the dGPU.
+- **Hardware cursor stays on.** The usual `no_hardware_cursors` workaround exists for
+  NVIDIA scanout; this panel is on the Intel plane, so the cursor doesn't double and HW
+  cursor costs zero per-frame CPU.
+- The cursor theme is **static on purpose** — the previous animated one had 8 frames on
+  `left_ptr`, and re-uploading the KMS cursor buffer 8× a cycle stutters the Intel plane.
+
+### 9. Palette derivation
+
+`scripts/theme_palette.py` — imported by *both* the applier and the panel preview, so the
+two can never disagree about what a theme means.
+
+A theme is two gradient stops. Everything else (`bg`, `surface`, `accent`, `dim`, `fg`,
+`danger`, …) is derived from stop A's hue, so the desktop stays in one colour family, with
+a per-theme overrides map for the values you want pinned.
+
+One rule that isn't cosmetic: **reds don't rotate.** `f85149`, `e65a6e`, `ff7b72` and
+`53272c` are protected from the hue shift. A delete button that turns lime because the
+accent moved is a usability bug, not a style choice.
+
+---
+
+## 📦 Install
+
+Arch or CachyOS. Other distros: see the [FAQ](#-faq).
+
+```bash
+git clone https://github.com/WafflingNinja/protogreen.git
+cd protogreen
+bash install.sh
+```
+
+What it does, in order, asking `[y/N]` before each:
+
+1. **Packages** — one `pacman -S --needed` call. The full list is printed before it runs.
+2. **Animated wallpaper** *(optional, AUR)* — `linux-wallpaperengine-git`, only needed to
+   convert new Wallpaper Engine scenes.
+3. **Pip's chat** *(optional)* — ollama + `llama3.2:3b`, ~2 GB. Say no and everything else
+   still works.
+4. **Configs** — anything already in `~/.config` is **renamed** to `<name>.bak-<date>`
+   first. Nothing is overwritten in place.
+5. Fills the `__HOME__` placeholder with your real home directory, and makes the scripts
+   executable.
+
+Files are **copied, not symlinked** — edit them freely afterwards, the repo isn't load
+bearing.
 
 Then log out and pick **Hyprland** at your display manager.
 
-## Keybinds
+<details>
+<summary>What gets installed (package list)</summary>
+
+```
+hyprland hypridle hyprlock hyprpaper hyprpicker hyprsunset
+xdg-desktop-portal-hyprland quickshell waybar rofi rofi-emoji dunst kitty thunar
+cava btop fastfetch mpvpaper cliphist wl-clipboard grim slurp satty
+playerctl pamixer brightnessctl power-profiles-daemon polkit-gnome
+qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6
+papirus-icon-theme papirus-folders adw-gtk-theme ttf-jetbrains-mono-nerd
+```
+
+</details>
+
+---
+
+## ⌨️ Keybinds
 
 `SUPER` is the mod.
 
+### Windows & workspaces
+
 | Key | Action |
 |---|---|
-| `SUPER` tap · `SUPER+R` · `SUPER+SPACE` | app launcher |
-| `SUPER+Q` · `E` · `C` · `M` | terminal · files · close window · exit Hyprland |
+| `SUPER` tap · `SUPER+R` · `SUPER+SPACE` | app launcher (rofi) |
+| `SUPER+Q` · `SUPER+E` | terminal · file manager |
+| `SUPER+C` · `SUPER+M` | close window · exit Hyprland |
 | `SUPER+F` · `V` · `P` · `J` | fullscreen · float · pseudo · toggle split |
-| `SUPER+L` | lock |
-| `SUPER+1…0` / `+SHIFT` | workspace / move window there |
-| `SUPER+CTRL+←→` | move window to prev/next workspace |
-| `SUPER+←↑↓→` / `+SHIFT` / `+ALT` | focus / move / resize |
+| `SUPER+1…0` | workspace |
+| `SUPER+SHIFT+1…0` | move window to workspace |
+| `SUPER+CTRL+←→` | move window to prev / next workspace |
+| `SUPER+←↑↓→` | move focus |
+| `SUPER+SHIFT+←↑↓→` | move window |
+| `SUPER+ALT+←↑↓→` | resize window |
 | `SUPER+S` · `SUPER+CTRL+S` | special workspace · send there |
-| `SUPER+TAB` | cycle windows |
+| `SUPER+TAB` · `SUPER+SHIFT+TAB` | cycle windows |
+| `SUPER + drag` | move (LMB) / resize (RMB) |
+
+### The shell
+
+| Key | Action |
+|---|---|
+| `SUPER+D` | HUD dashboard |
+| `SUPER+A` | Pip |
+| `SUPER+SHIFT+T` | theme panel |
+| `SUPER+SHIFT+B` | visor bar ⇄ waybar |
+| `F4` | crosshair overlay |
+| `SUPER+SHIFT+A` | showcase mode |
+
+### Tools
+
+| Key | Action |
+|---|---|
+| `SUPER+L` | lock |
 | `SUPER+H` | clipboard history |
 | `SUPER+SHIFT+S` · `W` · `Print` | screenshot region · window · full |
-| `SUPER+SHIFT+C` · `E` · `N` | colour picker · emoji · night light |
-| `SUPER+SHIFT+B` | visor bar ⇄ waybar |
-| `SUPER+D` · `SUPER+A` · `SUPER+SHIFT+T` | HUD · Pip · theme panel |
-| `F4` · `F8` | crosshair · autoclicker |
+| `SUPER+SHIFT+C` | colour picker |
+| `SUPER+SHIFT+E` | emoji picker |
+| `SUPER+SHIFT+N` | night light |
+| `F8` · `SUPER+ALT+C` | autoclicker config |
+| media / volume / brightness keys | with sound feedback |
 
-## Layout
+---
+
+## 📁 Layout
 
 ```
 config/
-├─ hypr/                     hyprland.conf · hyprlock · hypridle · hyprpaper · theme.conf
-│  ├─ scripts/               theme engine, power watcher, screenshots, autoclicker, …
-│  ├─ sounds/                UI sound pack
-│  └─ wallpapers/            static PNG + animated mp4
-├─ quickshell/protogreen/    visor bar, HUD, assistant, theme panel (QML)
-└─ waybar · rofi · dunst · kitty · cava · btop · fastfetch · gtk-3.0 · qt6ct
-demo/                        preview gif, full video, screenshots
+├─ hypr/
+│  ├─ hyprland.conf            monitors, env, rules, binds
+│  ├─ hyprlock.conf            lock screen
+│  ├─ hypridle.conf            idle actions
+│  ├─ hyprpaper.conf           static wallpaper
+│  ├─ theme.conf               generated — colours live here
+│  ├─ scripts/                 theme engine, power watcher, screenshots,
+│  │                           autoclicker, wallpaper pipeline, sounds
+│  ├─ sounds/                  UI sound pack (CC0)
+│  └─ wallpapers/              static PNG + animated mp4
+├─ quickshell/protogreen/
+│  ├─ shell.qml Bar.qml Hud.qml ThemePanel.qml Assistant.qml …
+│  ├─ components/             pills, sliders, tray, clock, colour wheel, …
+│  ├─ services/               sysinfo, cava config, tray helper
+│  └─ assistant/              persona + web search
+├─ waybar/                    fallback bar
+├─ rofi/ dunst/ kitty/ cava/ btop/ fastfetch/
+└─ gtk-3.0/ qt6ct/            GTK + Qt theming
+demo/                         banner, preview gif, full video, screenshots
 install.sh
 ```
 
-## Before you copy it
+---
 
-- Built on a **hybrid Intel + NVIDIA** laptop. The NVIDIA env vars and
-  `cursor:no_hardware_cursors` at the top of `hyprland.conf` exist for that — delete them
-  on AMD or plain Intel.
-- Monitor line is `eDP-1 1920x1080@144`. Change it for your panel.
-- The setup is **additive**: it was built next to KDE Plasma and does not touch it.
-- A few configs (dunst, qt6ct, hyprpaper, the QML) need absolute paths and expand neither
-  `~` nor `$HOME`, so they ship with a literal **`__HOME__`**. `install.sh` fills it in. If
-  you copy files by hand instead, run:
-  `grep -rlI __HOME__ ~/.config | xargs sed -i "s|__HOME__|$HOME|g"`
+## ❓ FAQ
 
-## Licence & credits
+**Does it work on non-Arch distros?**
+The configs do — they're plain Hyprland/QML/CSS. `install.sh` doesn't; it calls `pacman`.
+Install the equivalent packages by hand, copy `config/*` into `~/.config/`, then replace
+`__HOME__` with your home path:
+`grep -rlI __HOME__ ~/.config | xargs sed -i "s|__HOME__|$HOME|g"`
 
-Configs, scripts and QML: **MIT** — see [LICENSE](LICENSE).
+**Do I need an NVIDIA GPU?**
+No. Delete the NVIDIA env block at the top of `hyprland.conf` — that's it. It's there
+because this is a hybrid Intel+NVIDIA laptop.
 
-Not covered by it, and not my work:
+**Will this nuke my current setup?**
+No. The installer **renames** every existing config directory to `<name>.bak-<date>`
+before copying anything, and asks first. Your old setup is sitting right next to the new
+one.
 
-- `config/hypr/wallpapers/protogen-neon.mp4` — a conversion of Wallpaper Engine workshop
-  item `3157997169` ("Protogen Neon City Nachi"). Included so the rice looks as shown;
-  the art belongs to its creator.
-- `config/hypr/wallpapers/green-furry.png` — likewise.
-- `config/hypr/sounds/` — ships with its own `License.txt` (Kenney, CC0).
-- `config/cava/shaders/` — cava's bundled shaders, under their own headers.
+**Can I run it without the AI?**
+Yes, and nothing else changes. Say no at the ollama step. Pip's desktop commands keep
+working; only free-form chat needs the model.
+
+**Why Quickshell and not waybar / AGS / eww?**
+waybar modules are text and CSS — fine until you want a reactive face, a tracking eye and
+a spectrum analyser. AGS and eww are real options; Quickshell is QML, which means Qt's
+animation and shader stack, hot reload while the bar is running, and layer-shell handled
+for you. waybar is still in the repo as the fallback.
+
+**How do I go back?**
+```bash
+rm -rf ~/.config/hypr ~/.config/quickshell        # and any others you replaced
+mv ~/.config/hypr.bak-<date> ~/.config/hypr       # your originals
+```
+
+**Multi-monitor?**
+Honestly: untested. Everything was built against one 1080p 144 Hz internal panel
+(`eDP-1`). The bar should appear per-screen (Quickshell handles that), but the monitor
+line in `hyprland.conf` and the mpvpaper wallpaper both assume `eDP-1` and will need
+editing.
+
+---
+
+## ⚠️ Before you copy it
+
+- **Hybrid Intel + NVIDIA laptop.** The env block and GPU-specific choices in
+  `hyprland.conf` exist for that machine. Harmless to delete on AMD or plain Intel.
+- **Monitor is hard-coded** to `eDP-1 1920x1080@144`. Change it for your panel.
+- **`__HOME__` placeholder.** dunst, qt6ct, hyprpaper and the QML want absolute paths and
+  expand neither `~` nor `$HOME`, so those files ship with a literal `__HOME__` that the
+  installer fills in. Copying files by hand means doing that substitution yourself.
+- **Additive.** This was built alongside KDE Plasma and doesn't touch it — Plasma stays
+  selectable at the display manager.
+- **hyprpm plugins don't survive Hyprland updates.** Re-run `hyprpm update` after
+  upgrading.
+
+---
+
+## 📜 Licence & credits
+
+Configs, scripts and QML: **MIT** — see [LICENSE](LICENSE). Take it, fork it, ship it.
+
+**Not mine, and not covered by that licence:**
+
+| what | who |
+|---|---|
+| `wallpapers/protogen-neon.mp4` | conversion of Wallpaper Engine workshop item `3157997169`, "Protogen Neon City Nachi" — art by its creator |
+| `wallpapers/green-furry.png` | likewise, not my artwork |
+| `hypr/sounds/` | Kenney sound pack, CC0 — ships with its own `License.txt` |
+| `cava/shaders/` | cava's bundled shaders, under their own headers |
+
+**Built on the work of:** [Hyprland](https://hyprland.org) ·
+[Quickshell](https://quickshell.org) · [rofi](https://github.com/davatorium/rofi) ·
+[dunst](https://dunst-project.org) · [cava](https://github.com/karlstav/cava) ·
+[mpvpaper](https://github.com/GhostNaN/mpvpaper) ·
+[satty](https://github.com/gabm/Satty) · [fastfetch](https://github.com/fastfetch-cli/fastfetch) ·
+[ollama](https://ollama.com)
 
 ---
 
 <p align="center">
-  Made by <b>WaffleNinja</b><br>
+  <b>WaffleNinja</b><br>
   <a href="https://www.tiktok.com/@waffleninja7">TikTok</a> ·
   <a href="https://t.me/TheWaffleNinja">Telegram</a> ·
   <a href="https://www.instagram.com/waffleninja444/">Instagram</a>
+  <br><br>
+  <sub>If you run it and something breaks, open an issue — I'd rather hear it than not.</sub>
 </p>

@@ -1,0 +1,154 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 40,
+    "margin-top": 6,
+    "margin-left": 10,
+    "margin-right": 10,
+    "spacing": 6,
+    "modules-left": [
+        "custom/launcher",
+        "hyprland/workspaces",
+        "custom/quote"
+    ],
+    "modules-center": [
+        "custom/media",
+        "clock"
+    ],
+    "modules-right": [
+        "tray",
+        "custom/gpu",
+        "temperature",
+        "cpu",
+        "memory",
+        "pulseaudio",
+        "backlight",
+        "network",
+        "bluetooth",
+        "custom/powerprofile",
+        "battery",
+        "custom/power"
+    ],
+    "custom/launcher": {
+        "format": "",
+        "on-click": "rofi -show drun",
+        "tooltip": false
+    },
+    "custom/power": {
+        "format": "",
+        "on-click": "__HOME__/.config/hypr/scripts/powermenu.sh",
+        "tooltip-format": "power menu"
+    },
+    "custom/powerprofile": {
+        "exec": "__HOME__/.config/waybar/scripts/powerprofile.sh status",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 8,
+        "format": "{}",
+        "on-click": "__HOME__/.config/waybar/scripts/powerprofile.sh cycle",
+        "on-click-right": "__HOME__/.config/waybar/scripts/powerprofile.sh auto",
+        "tooltip": true
+    },
+    "custom/quote": {
+        "exec": "__HOME__/.config/hypr/scripts/quote.sh",
+        "interval": 45,
+        "format": "{}",
+        "tooltip": false
+    },
+    "custom/media": {
+        "exec": "__HOME__/.config/hypr/scripts/media.sh",
+        "return-type": "json",
+        "interval": 2,
+        "format": "{}",
+        "max-length": 50,
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+    "custom/gpu": {
+        "exec": "__HOME__/.config/hypr/scripts/gpu.sh",
+        "interval": 3,
+        "format": "  {}",
+        "tooltip-format": "NVIDIA GPU"
+    },
+    "temperature": {
+        "thermal-zone": 0,
+        "critical-threshold": 85,
+        "format": "  {temperatureC}°",
+        "format-critical": "  {temperatureC}°"
+    },
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate",
+        "format-icons": {
+            "active": "",
+            "default": "",
+            "empty": ""
+        },
+        "persistent-workspaces": {
+            "*": 5
+        }
+    },
+    "clock": {
+        "format": "  {:%H:%M}",
+        "format-alt": "  {:%a %d %b %Y}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+    },
+    "cpu": {
+        "format": "  {usage}%",
+        "interval": 2
+    },
+    "memory": {
+        "format": "  {percentage}%"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    "backlight": {
+        "format": "  {percent}%",
+        "on-scroll-up": "brightnessctl set 5%+",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+    "network": {
+        "format-wifi": "  {signalStrength}%",
+        "format-ethernet": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname} {ipaddr}",
+        "on-click": "nm-connection-editor"
+    },
+    "bluetooth": {
+        "format": "",
+        "format-disabled": "",
+        "format-connected": "  {num_connections}",
+        "on-click": "blueman-manager"
+    },
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "",
+        "format-icons": {
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        },
+        "on-click": "pavucontrol",
+        "on-click-right": "pamixer -t"
+    },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    }
+}

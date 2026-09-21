@@ -1,0 +1,112 @@
+/* refined green — glam: pill modules, colored accents, soft shadow */
+@define-color bg      rgba(10, 15, 11, 0.82);
+@define-color surface rgba(20, 31, 24, 0.92);
+@define-color green   #47f154;
+@define-color green2  #29a440;
+@define-color sage    #98f79c;
+@define-color teal    #3cd983;
+@define-color fg      #d6f3db;
+@define-color muted   #538b60;
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: @fg;
+}
+
+.modules-left, .modules-center, .modules-right {
+    background: @bg;
+    border-radius: 14px;
+    border: 1px solid rgba(71, 241, 84, 0.25);
+    padding: 2px 6px;
+    margin: 2px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+tooltip {
+    background: @surface;
+    border: 1px solid @green;
+    border-radius: 10px;
+    color: @fg;
+}
+
+/* each module a rounded pill */
+#custom-launcher, #custom-power, #custom-powerprofile, #custom-media, #custom-gpu, #temperature,
+#clock, #cpu, #memory, #battery,
+#backlight, #network, #bluetooth, #pulseaudio, #tray {
+    background: @surface;
+    border-radius: 10px;
+    padding: 0 11px;
+    margin: 3px 3px;
+}
+
+/* power profile: color tells you the active state at a glance */
+#custom-powerprofile { font-size: 14px; padding: 0 12px; }
+#custom-powerprofile.performance { color: #f85149; background: rgba(248, 81, 73, 0.14); }
+#custom-powerprofile.balanced    { color: @green2; }
+#custom-powerprofile.power-saver { color: @teal;   background: rgba(60, 217, 131, 0.12); }
+#custom-powerprofile.unknown     { color: @muted; }
+#custom-powerprofile:hover       { color: #0a0f0b; background: @sage; }
+
+#custom-launcher {
+    color: @sage;
+    font-size: 16px;
+    padding: 0 14px;
+    background: linear-gradient(135deg, rgba(71,241,84,0.25), rgba(60,217,131,0.18));
+}
+#custom-launcher:hover { color: #0a0f0b; background: @sage; }
+
+#custom-power {
+    color: #f85149;
+    font-size: 14px;
+    padding: 0 13px;
+}
+#custom-power:hover { color: #0a0f0b; background: #f85149; }
+
+#workspaces {
+    background: @surface;
+    border-radius: 10px;
+    margin: 3px 3px;
+    padding: 0 3px;
+}
+#workspaces button {
+    color: @muted;
+    padding: 0 8px;
+    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.2, 1.5, 0.3, 1);
+}
+#workspaces button.active {
+    color: #0a0f0b;
+    background: linear-gradient(135deg, @green, @teal);
+    box-shadow: 0 0 8px rgba(71, 241, 84, 0.5);
+}
+#workspaces button:hover { color: @sage; background: rgba(71,241,84,0.15); box-shadow: none; }
+#workspaces button.empty { color: rgba(83, 139, 96, 0.4); }
+
+#custom-quote { color: @muted; background: transparent; font-style: italic; padding: 0 12px; }
+#custom-media { color: @sage; }
+#custom-media.Paused { color: @muted; }
+#custom-gpu { color: @teal; }
+#temperature { color: @green2; }
+#temperature.critical { color: #f85149; }
+
+#clock { color: @sage; font-weight: 700; }
+#cpu       { color: @green2; }
+#memory    { color: @green; }
+#network   { color: @teal; }
+#bluetooth { color: @teal; }
+#pulseaudio{ color: @sage; }
+#backlight { color: @green2; }
+#battery   { color: @fg; }
+#battery.charging { color: @sage; }
+#battery.warning:not(.charging)  { color: #f3f467; }
+#battery.critical:not(.charging) { color: #f85149; }
+#tray { background: @surface; }

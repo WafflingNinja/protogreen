@@ -59,7 +59,11 @@ set_profile()  { [ -f "$MANUAL" ] && return 0; powerprofilesctl set "$1" 2>/dev/
 # Intel iGPU (mesa EGL vendor + iHD vaapi) and a VULKAN wayland context; that combo is
 # the only one that survives here (plain gpu-context=wayland/GL dies). Match by cmdline
 # (contains "protogen-neon" — never matches this script, so pkill -f is safe).
-MPV_ENV=(env __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json LIBVA_DRIVER_NAME=iHD)
+# LIBVA_DRIVER_NAME is pinned ONLY on the NVIDIA profile. The pin exists to stop
+# mpv picking NVIDIA's libva; on an AMD or Intel-only box there is no NVIDIA libva
+# to avoid, and mesa picks the right driver by itself. install.sh sets PROTOGREEN_VAAPI.
+MPV_ENV=(env __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json)
+[ -n "${PROTOGREEN_VAAPI:-}" ] && MPV_ENV+=("LIBVA_DRIVER_NAME=$PROTOGREEN_VAAPI")
 # vo stays gpu/waylandvk — MEASURED 2026-08-07, not assumed. vo=dmabuf-wayland was
 # tested as the "lighter" option (no GL context, vaapi surface handed straight to the
 # compositor) and came out identical: 262MB/20%-of-a-core vs gpu's 270MB/20%, same

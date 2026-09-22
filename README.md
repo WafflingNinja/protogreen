@@ -292,7 +292,8 @@ cd protogreen
 bash install.sh
 ```
 
-What it does, in order, asking `[y/N]` before each:
+It opens with a disclaimer you have to accept by typing `yes`, then does the following,
+asking `[y/N]` before each:
 
 1. **Packages** — one `pacman -S --needed` call. The full list is printed before it runs.
 2. **Animated wallpaper** *(optional, AUR)* — `linux-wallpaperengine-git`, only needed to
@@ -300,9 +301,14 @@ What it does, in order, asking `[y/N]` before each:
 3. **Pip's chat** *(optional)* — ollama + `llama3.2:3b`, ~2 GB. Say no and everything else
    still works.
 4. **Configs** — anything already in `~/.config` is **renamed** to `<name>.bak-<date>`
-   first. Nothing is overwritten in place.
-5. Fills the `__HOME__` placeholder with your real home directory, and makes the scripts
-   executable.
+   first. Nothing is overwritten in place. Fills the `__HOME__` placeholder with your real
+   home directory and makes the scripts executable.
+5. **GPU profile** — detects your GPU, shows what it's about to write, and swaps the
+   marked block in `hyprland.conf`. Say no to pick `nvidia-hybrid` / `amd` / `intel`
+   yourself. On AMD this means *removing* the NVIDIA pins rather than adding anything —
+   mesa already picks the right VA-API driver on its own.
+6. **Monitor** — detects your connected output and offers to replace the hard-coded
+   `eDP-1` line.
 
 Files are **copied, not symlinked** — edit them freely afterwards, the repo isn't load
 bearing.
@@ -410,8 +416,10 @@ Install the equivalent packages by hand, copy `config/*` into `~/.config/`, then
 `grep -rlI __HOME__ ~/.config | xargs sed -i "s|__HOME__|$HOME|g"`
 
 **Do I need an NVIDIA GPU?**
-No. Delete the NVIDIA env block at the top of `hyprland.conf` — that's it. It's there
-because this is a hybrid Intel+NVIDIA laptop.
+No. `install.sh` detects your GPU and writes the matching profile. If you're copying by
+hand, delete the lines between the `PROTOGREEN GPU PROFILE` markers in `hyprland.conf` —
+they're all additive env vars, so removing them is always safe. The bar's GPU readout
+figures out the vendor by itself and needs no edit either way.
 
 **Will this nuke my current setup?**
 No. The installer **renames** every existing config directory to `<name>.bak-<date>`
@@ -444,9 +452,26 @@ editing.
 
 ## ⚠️ Before you copy it
 
-- **Hybrid Intel + NVIDIA laptop.** The env block and GPU-specific choices in
-  `hyprland.conf` exist for that machine. Harmless to delete on AMD or plain Intel.
-- **Monitor is hard-coded** to `eDP-1 1920x1080@144`. Change it for your panel.
+**This is my personal desktop config, published as-is. It is not a product, it has no
+warranty, and it is not supported.** If installing it breaks your configs, your session,
+your packages or your data, that is on you — back up anything you care about first. The
+[MIT licence](LICENSE) is the binding version of that sentence; this paragraph is just
+the human-readable one. `install.sh` asks you to type `yes` to the same thing before it
+touches anything.
+
+That said, it does try to meet you halfway:
+
+- **GPU.** Built on a hybrid Intel + NVIDIA laptop, but the installer detects your GPU
+  and writes the matching profile (`nvidia-hybrid` / `amd` / `intel`) into
+  `hyprland.conf` — it shows the guess and lets you override it. The bar's GPU readout
+  ([`scripts/gpu-read.sh`](config/hypr/scripts/gpu-read.sh)) detects the vendor at
+  runtime, so NVIDIA, AMD and Intel all work with no edits. Intel reports temperature
+  only; there's no cheap utilisation counter for it.
+- **Monitor.** Ships hard-coded to `eDP-1 1920x1080@144`. The installer reads your
+  connected output from DRM and offers to replace that line. Refresh rate isn't exposed
+  in sysfs, so the detected line omits `@Hz` and Hyprland picks the highest available —
+  add it back by hand if you want a specific rate. Deleting the line entirely is also
+  fine; the `,preferred,auto,1` fallback below it drives any panel.
 - **`__HOME__` placeholder.** dunst, qt6ct, hyprpaper and the QML want absolute paths and
   expand neither `~` nor `$HOME`, so those files ship with a literal `__HOME__` that the
   installer fills in. Copying files by hand means doing that substitution yourself.

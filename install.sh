@@ -21,7 +21,7 @@ ask(){ read -rp "$1 [y/N] " a; [[ "$a" =~ ^[Yy]$ ]]; }
 command -v pacman >/dev/null || { r "Not an Arch-based system (no pacman). Stopping."; exit 1; }
 [ -d "$SRC" ] || { r "config/ not found next to this script. Run it from the repo."; exit 1; }
 
-g "== PROTO//GREEN setup =="
+g "== PROTO//GREEN $(cat "$REPO/VERSION" 2>/dev/null) setup =="
 echo "repo:   $REPO"
 echo "target: $DEST"
 echo
@@ -257,8 +257,24 @@ echo "  Animated: ~/.config/hypr/wallpapers/protogen-neon.mp4 (mpvpaper, via scr
 echo "  The animated one is a conversion of Wallpaper Engine workshop item 3157997169"
 echo "  (art by its original creator — swap it for your own if you prefer)."
 
+# ------------------------------------------------------------------ updater
+y "[8] updater"
+if [ "$CONFIGS_DONE" = 1 ]; then
+  # Hash every installed file NOW (after the GPU/monitor edits), so update.sh can
+  # tell files you edit later apart from ones it may safely replace.
+  bash "$REPO/update.sh" --record
+  mkdir -p "$HOME/.local/bin"
+  ln -sf "$REPO/update.sh" "$HOME/.local/bin/protogreen-update"
+  echo "  run 'protogreen-update' to get new versions from GitHub."
+  echo "  it never overwrites a file you edited - the new one lands next to it as .new"
+  echo "  keep this clone ($REPO) - the updater pulls into it."
+  case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) y "  ~/.local/bin is not in your PATH - run: bash $REPO/update.sh";; esac
+else
+  y "  configs were not installed this run - skipping"
+fi
+
 # ------------------------------------------------------------------ session
-y "[8] session"
+y "[9] session"
 echo "  Log out and pick 'Hyprland' at your display manager."
 echo "  Keybinds: SUPER=launcher · SUPER+Q=kitty · SUPER+E=files · SUPER+C=close"
 echo "            SUPER+SHIFT+B=switch visor bar <-> waybar · SUPER+SHIFT+S=screenshot"

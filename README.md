@@ -315,6 +315,24 @@ bearing.
 
 Then log out and pick **Hyprland** at your display manager.
 
+### Updating
+
+```bash
+protogreen-update
+```
+
+Checks GitHub, lists what changed, asks, then pulls into your clone and syncs `~/.config`.
+Keep the clone you installed from - the updater lives in it.
+
+- A file you **never edited** is replaced with the new version.
+- A file you **did edit** is left alone. The new version lands next to it as `<file>.new`,
+  and the updater lists them so you can merge by hand.
+- Nothing is deleted. Your GPU and monitor lines in `hyprland.conf` are carried over.
+- Colours set from the theme panel count as edits, so those files get a `.new`.
+
+Versions are `MAJOR.MINOR.PATCH` (see `VERSION`): `1.0.1` is a small fix, `1.1.0` adds
+something, `2.0.0` changes things enough that you should read the notes first.
+
 <details>
 <summary>What gets installed (package list)</summary>
 

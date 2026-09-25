@@ -13,7 +13,7 @@
 set -uo pipefail
 
 MANUAL=/tmp/power-profile.manual
-BAT=/sys/class/power_supply/BAT1/status
+BAT="$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1)/status"
 
 cur()         { powerprofilesctl get 2>/dev/null; }
 on_battery()  { [ "$(cat "$BAT" 2>/dev/null)" = "Discharging" ]; }

@@ -61,7 +61,7 @@ PKGS=(
   cava btop fastfetch mpvpaper
   cliphist wl-clipboard grim slurp satty
   playerctl pamixer brightnessctl power-profiles-daemon polkit-gnome
-  qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6
+  qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6 awww
   papirus-icon-theme papirus-folders adw-gtk-theme ttf-jetbrains-mono-nerd
 )
 
@@ -114,6 +114,12 @@ if ask "  copy configs into $DEST?"; then
   grep -rlI "$PLACEHOLDER" "${DIRS[@]/#/$DEST/}" 2>/dev/null \
     | xargs -r sed -i "s|$PLACEHOLDER|$HOME|g"
   echo "  filled in $PLACEHOLDER -> $HOME"
+
+  # hyprlock.conf points at lock-bg.png, which only the theme panel generates.
+  # Seed it with the static wallpaper so a fresh install has a lock background.
+  mkdir -p "$DEST/protogreen"
+  [ -f "$DEST/protogreen/lock-bg.png" ] \
+    || cp "$DEST/hypr/wallpapers/green-furry.png" "$DEST/protogreen/lock-bg.png"
 
   chmod +x "$DEST"/hypr/scripts/* 2>/dev/null
   chmod +x "$DEST"/quickshell/protogreen/services/*.sh 2>/dev/null
@@ -201,6 +207,13 @@ env = LIBVA_DRIVER_NAME,iHD
 env = PROTOGREEN_VAAPI,iHD' ;;
   esac
   replace_block "GPU PROFILE" "$BODY" && g "  applied '$GPU' profile to hyprland.conf"
+
+  # The animated wallpaper runs mpvpaper with gpu-context=waylandvk on the iGPU, so
+  # it needs mesa's Vulkan driver. Without it mpvpaper dies at start = gray desktop.
+  case "$GPU" in amd) VK=vulkan-radeon;; *) VK=vulkan-intel;; esac
+  if ask "  install $VK (Vulkan driver the animated wallpaper needs)?"; then
+    sudo pacman -S --needed "$VK" || y "  $VK failed - the static wallpaper will be used"
+  fi
 fi
 
 y "[6] monitor"

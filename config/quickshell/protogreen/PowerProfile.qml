@@ -64,7 +64,7 @@ Singleton {
     function auto() {
         setProc.command = ["sh", "-c",
             "rm -f /tmp/power-profile.manual; " +
-            "if [ \"$(cat /sys/class/power_supply/BAT1/status 2>/dev/null)\" = Discharging ]; " +
+            "if [ \"$(cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1)\" = Discharging ]; " +
             "then powerprofilesctl set power-saver; else powerprofilesctl set balanced; fi"]
         setProc.running = true
         get.running = true

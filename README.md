@@ -323,7 +323,7 @@ hyprland hypridle hyprlock hyprpaper hyprpicker hyprsunset
 xdg-desktop-portal-hyprland quickshell waybar rofi rofi-emoji dunst kitty thunar
 cava btop fastfetch mpvpaper cliphist wl-clipboard grim slurp satty
 playerctl pamixer brightnessctl power-profiles-daemon polkit-gnome
-qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6
+qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6 awww
 papirus-icon-theme papirus-folders adw-gtk-theme ttf-jetbrains-mono-nerd
 ```
 

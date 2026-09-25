@@ -13,7 +13,7 @@ set -uo pipefail
 exec 9>"/tmp/power-watch.lock"
 flock -n 9 || exit 0
 
-BAT=/sys/class/power_supply/BAT1/status
+BAT="$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1)/status"   # BAT0 on Dell/ThinkPad, BAT1 on ASUS
 WP_ID=3157997169
 STATIC="$HOME/.config/hypr/wallpapers/green-furry.png"
 # Active wallpaper is owned by the theme panel: it writes the chosen mp4 path here
@@ -21,7 +21,6 @@ STATIC="$HOME/.config/hypr/wallpapers/green-furry.png"
 # the original pre-rendered scene if the pointer is missing or points at nothing.
 WP_POINTER="$HOME/.config/protogreen/wallpaper.path"
 DEFAULT_VIDEO="$HOME/.config/hypr/wallpapers/protogen-neon.mp4"
-MON=eDP-1
 MANUAL=/tmp/power-profile.manual          # set by waybar powerprofile.sh "cycle"/"set"
 WP_FPS=30                                 # animated wallpaper framerate
 state=""
@@ -32,6 +31,9 @@ state=""
 if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
     export HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$(find "$XDG_RUNTIME_DIR/hypr" -name .socket.sock 2>/dev/null | head -1)")")"
 fi
+# first output Hyprland reports; eDP-1 only if hyprctl/jq are unavailable
+MON="$(hyprctl monitors -j 2>/dev/null | jq -r '.[0].name // empty' 2>/dev/null)"
+: "${MON:=eDP-1}"
 
 on_battery()   { [ "$(cat "$BAT" 2>/dev/null)" = "Discharging" ]; }
 # Heavy task = pause the animated wallpaper (it's occluded behind a game anyway,
@@ -224,6 +226,7 @@ apply() {
 wp_seen=""
 _game_cached=0
 _video_cached=0
+video_fails=0
 CAPTURE_LOCK=/tmp/protogreen-capture.lock
 while :; do
     # wpconvert.sh is recording the wallpaper layer: do NOT relaunch mpvpaper on top
@@ -238,6 +241,7 @@ while :; do
     # one probe per tick each; every helper below reads these
     _game_probe  && _game_cached=1  || _game_cached=0
     _video_probe && _video_cached=1 || _video_cached=0
+    running_video && video_fails=0
     apply
     # wallpaper swapped from the theme panel → restart mpvpaper on the new file.
     # (running_video is process-level, so it would happily keep playing the old one.)
@@ -248,7 +252,14 @@ while :; do
     fi
     # self-heal: if we're not gaming and the video wallpaper died, bring it back
     # (covers a crash, or a clean login where state hasn't "changed" yet).
-    if ! game_running && ! running_video; then start_video; wp_muted=-1; fi
+    # After 3 respawns in a row that died by the next tick (no Vulkan driver, broken
+    # vaapi, bad output name), stop retrying and draw the static frame instead - a
+    # dead mpvpaper otherwise leaves the bare gray compositor background forever.
+    if ! game_running && ! running_video; then
+        video_fails=$((video_fails + 1))
+        if [ "$video_fails" -le 3 ]; then start_video; wp_muted=-1
+        else running_static || start_static; fi
+    fi
     # same self-heal for the static one: if awww dies mid-game the pet goes black again.
     if game_running && ! running_static; then start_static; fi
     # mute/unmute against what else is making noise or filling the screen

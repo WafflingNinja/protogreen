@@ -38,7 +38,9 @@ set -uo pipefail
 
 ID=""; FPS=60; SECS=30; CRF=16; CODEC=h264; CROSSFADE=1; SETWP=0
 KEEPRAW=0; REENCODE=0; TRIMSTART=0
-MON=eDP-1
+# first output Hyprland reports; eDP-1 only if hyprctl/jq are unavailable
+MON="$(hyprctl monitors -j 2>/dev/null | jq -r '.[0].name // empty' 2>/dev/null)"
+: "${MON:=eDP-1}"
 CACHE="$HOME/.config/protogreen/wallpapers"
 POINTER="$HOME/.config/protogreen/wallpaper.path"
 STATEDIR="$HOME/.config/protogreen"

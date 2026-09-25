@@ -315,6 +315,35 @@ bearing.
 
 Then log out and pick **Hyprland** at your display manager.
 
+### Updating
+
+```bash
+protogreen-update
+```
+
+Checks GitHub, lists what changed, asks, then pulls into your clone and syncs `~/.config`.
+Keep the clone you installed from - the updater lives in it.
+
+- A file you **never edited** is replaced with the new version.
+- A file you **did edit** is left alone. The new version lands next to it as `<file>.new`,
+  and the updater lists them so you can merge by hand.
+- Nothing is deleted. Your GPU and monitor lines in `hyprland.conf` are carried over.
+- Colours set from the theme panel count as edits, so those files get a `.new`.
+
+**Installed before the updater existed?** Pull once by hand, then run it from the clone:
+
+```bash
+cd protogreen        # the folder you cloned and installed from
+git pull
+bash update.sh
+```
+
+Files still matching a past release are updated; anything you changed gets a `.new`.
+Deleted the clone? `git clone` it again and run `bash update.sh` in it - same result.
+
+Versions are `MAJOR.MINOR.PATCH` (see `VERSION`): `1.0.1` is a small fix, `1.1.0` adds
+something, `2.0.0` changes things enough that you should read the notes first.
+
 <details>
 <summary>What gets installed (package list)</summary>
 
@@ -323,7 +352,7 @@ hyprland hypridle hyprlock hyprpaper hyprpicker hyprsunset
 xdg-desktop-portal-hyprland quickshell waybar rofi rofi-emoji dunst kitty thunar
 cava btop fastfetch mpvpaper cliphist wl-clipboard grim slurp satty
 playerctl pamixer brightnessctl power-profiles-daemon polkit-gnome
-qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6
+qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6 awww
 papirus-icon-theme papirus-folders adw-gtk-theme ttf-jetbrains-mono-nerd
 ```
 

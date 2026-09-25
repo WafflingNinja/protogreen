@@ -15,6 +15,7 @@ SRC="$REPO/config"
 DEST="$HOME/.config"
 STATE="$DEST/protogreen"
 MANIFEST="$STATE/installed.sha256"   # hash of every file as install/update wrote it
+INSTALLED="$STATE/version"            # version currently synced into ~/.config
 PLACEHOLDER="__HOME__"
 BRANCH=main
 
@@ -51,12 +52,26 @@ render() {
   return 0
 }
 
+# No install record for <rel> (installed before 1.1.0): it is unedited if it
+# matches the file as ANY past commit shipped it.
+shipped_before() {
+  local rel="$1" want="$2" out="$3" c
+  for c in $(git -C "$REPO" rev-list HEAD -- "config/$rel"); do
+    git -C "$REPO" show "$c:config/$rel" > "$out" 2>/dev/null || continue
+    grep -qI "$PLACEHOLDER" "$out" && sed -i "s|$PLACEHOLDER|$HOME|g" "$out"
+    [ "$rel" = hypr/hyprland.conf ] && keep_blocks "$DEST/$rel" "$out"
+    [ "$(sha256sum < "$out" | cut -d' ' -f1)" = "$want" ] && return 0
+  done
+  return 1
+}
+
 record() {
   mkdir -p "$STATE"
   repo_files | while IFS= read -r rel; do
     [ -f "$DEST/$rel" ] && printf '%s  %s\n' "$(sha256sum < "$DEST/$rel" | cut -d' ' -f1)" "$rel"
   done > "$MANIFEST"
   printf '%s\n' "$REPO" > "$STATE/repo"
+  cp "$REPO/VERSION" "$INSTALLED"
 }
 
 sync_configs() {
@@ -65,8 +80,8 @@ sync_configs() {
   if [ -r "$MANIFEST" ]; then
     while read -r h rel; do known["$rel"]="$h"; done < "$MANIFEST"
   else
-    y "  no install record found (installed before 1.1.0) - every file that differs"
-    y "  from the new version is treated as edited and gets a .new next to it"
+    y "  no install record found (installed before 1.1.0) - files matching a past"
+    y "  release are updated, anything else counts as edited and gets a .new"
   fi
   mkdir -p "$STATE"
   local tmp; tmp="$(mktemp -d "$STATE/.update.XXXXXX")"
@@ -81,7 +96,8 @@ sync_configs() {
       ch="$(sha256sum < "$dst" | cut -d' ' -f1)"
       if [ "$ch" = "$nh" ]; then
         :                                            # already current
-      elif [ "$ch" = "${known[$rel]:-}" ]; then
+      elif [ "$ch" = "${known[$rel]:-}" ] \
+        || { [ -z "${known[$rel]:-}" ] && shipped_before "$rel" "$ch" "$tmp/old"; }; then
         mv "$new" "$dst"; updated=$((updated + 1))   # untouched since install
       else
         mv "$new" "$dst.new"; kept+=("$rel")         # yours - leave it alone
@@ -95,6 +111,7 @@ sync_configs() {
   for rel in "${!known[@]}"; do printf '%s  %s\n' "${known[$rel]}" "$rel"; done \
     | sort -k2 > "$MANIFEST"
   printf '%s\n' "$REPO" > "$STATE/repo"
+  cp "$REPO/VERSION" "$INSTALLED"
 
   echo
   g "updated $from -> $(cat "$REPO/VERSION")"
@@ -119,7 +136,8 @@ main() {
   cd "$REPO" || exit 1
 
   local cur new
-  cur="$(cat VERSION 2>/dev/null || echo 0.0.0)"
+  # installs from before the updater existed have no version file
+  cur="$(cat "$INSTALLED" 2>/dev/null || echo "pre-1.1.0")"
   g "== PROTO//GREEN update =="
   echo "installed: $cur"
   git fetch -q origin "$BRANCH" || { r "could not reach GitHub"; exit 1; }
@@ -127,7 +145,10 @@ main() {
   echo "latest:    $new"
 
   if git merge-base --is-ancestor "origin/$BRANCH" HEAD; then
-    g "already up to date"; exit 0
+    [ "$cur" = "$(cat VERSION)" ] && { g "already up to date"; exit 0; }
+    # the clone is current but ~/.config is not (e.g. updated with a plain git pull)
+    ask "the clone is at $(cat VERSION) but ~/.config is at $cur - sync it?" || { y "nothing changed"; exit 0; }
+    exec bash "$REPO/update.sh" --sync "$cur"
   fi
 
   echo; echo "what changed:"

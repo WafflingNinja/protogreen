@@ -330,6 +330,17 @@ Keep the clone you installed from - the updater lives in it.
 - Nothing is deleted. Your GPU and monitor lines in `hyprland.conf` are carried over.
 - Colours set from the theme panel count as edits, so those files get a `.new`.
 
+**Installed before the updater existed?** Pull once by hand, then run it from the clone:
+
+```bash
+cd protogreen        # the folder you cloned and installed from
+git pull
+bash update.sh
+```
+
+Files still matching a past release are updated; anything you changed gets a `.new`.
+Deleted the clone? `git clone` it again and run `bash update.sh` in it - same result.
+
 Versions are `MAJOR.MINOR.PATCH` (see `VERSION`): `1.0.1` is a small fix, `1.1.0` adds
 something, `2.0.0` changes things enough that you should read the notes first.
 

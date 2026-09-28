@@ -58,12 +58,14 @@ PKGS=(
   hyprland hypridle hyprlock hyprpaper hyprpicker hyprsunset
   xdg-desktop-portal-hyprland
   quickshell waybar rofi rofi-emoji dunst kitty thunar
-  cava btop fastfetch mpvpaper
+  cava btop fastfetch
   cliphist wl-clipboard grim slurp satty
   playerctl pamixer brightnessctl power-profiles-daemon polkit-gnome
   qt6ct imagemagick jq socat python-pillow python-evdev python-pyqt6
-  papirus-icon-theme papirus-folders adw-gtk-theme ttf-jetbrains-mono-nerd
+  papirus-icon-theme adw-gtk-theme ttf-jetbrains-mono-nerd
 )
+# Not in the official repos — pacman can't install these, they need an AUR helper.
+AUR_PKGS=(mpvpaper papirus-folders)
 
 y "[1] packages (${#PKGS[@]})"
 echo "  ${PKGS[*]}"
@@ -74,6 +76,13 @@ fi
 HELPER=""
 command -v paru >/dev/null && HELPER=paru
 [ -z "$HELPER" ] && command -v yay >/dev/null && HELPER=yay
+echo "  AUR: ${AUR_PKGS[*]}"
+if [ -n "$HELPER" ]; then
+  ask "  install AUR packages with $HELPER?" && { "$HELPER" -S --needed "${AUR_PKGS[@]}" || y "  some AUR packages failed — check output above"; }
+else
+  y "  no paru/yay found — install these yourself: ${AUR_PKGS[*]}"
+fi
+
 y "[2] animated wallpaper (optional, AUR)"
 echo "  linux-wallpaperengine-git — plays Wallpaper Engine workshop items."
 echo "  Skip it and the static PNG wallpaper is used instead."
@@ -114,6 +123,15 @@ if ask "  copy configs into $DEST?"; then
   grep -rlI "$PLACEHOLDER" "${DIRS[@]/#/$DEST/}" 2>/dev/null \
     | xargs -r sed -i "s|$PLACEHOLDER|$HOME|g"
   echo "  filled in $PLACEHOLDER -> $HOME"
+
+  # hyprland.conf ships with the author's keyboard layout. Use this system's.
+  if [ -f "$DEST/hypr/hyprland.conf" ]; then
+    KB_LAYOUT="$(localectl status 2>/dev/null | awk -F': *' '/X11 Layout/{print $2}')"
+    KB_VARIANT="$(localectl status 2>/dev/null | awk -F': *' '/X11 Variant/{print $2}')"
+    sed -i -e "s|^\(\s*kb_layout = \).*|\1${KB_LAYOUT:-us}|" \
+           -e "s|^\(\s*kb_variant = \).*|\1$KB_VARIANT|" "$DEST/hypr/hyprland.conf"
+    echo "  keyboard layout -> ${KB_LAYOUT:-us}${KB_VARIANT:+ ($KB_VARIANT)}"
+  fi
 
   chmod +x "$DEST"/hypr/scripts/* 2>/dev/null
   chmod +x "$DEST"/quickshell/protogreen/services/*.sh 2>/dev/null

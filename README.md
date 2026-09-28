@@ -295,14 +295,17 @@ bash install.sh
 It opens with a disclaimer you have to accept by typing `yes`, then does the following,
 asking `[y/N]` before each:
 
-1. **Packages** — one `pacman -S --needed` call. The full list is printed before it runs.
+1. **Packages** — one `pacman -S --needed` call, then `mpvpaper` and `papirus-folders` from the
+   AUR via paru/yay (skipped with a warning if neither is installed). The full list is printed
+   before it runs.
 2. **Animated wallpaper** *(optional, AUR)* — `linux-wallpaperengine-git`, only needed to
    convert new Wallpaper Engine scenes.
 3. **Pip's chat** *(optional)* — ollama + `llama3.2:3b`, ~2 GB. Say no and everything else
    still works.
 4. **Configs** — anything already in `~/.config` is **renamed** to `<name>.bak-<date>`
    first. Nothing is overwritten in place. Fills the `__HOME__` placeholder with your real
-   home directory and makes the scripts executable.
+   home directory, sets the keyboard layout to your system's (`localectl`, falls back to `us`)
+   and makes the scripts executable.
 5. **GPU profile** — detects your GPU, shows what it's about to write, and swaps the
    marked block in `hyprland.conf`. Say no to pick `nvidia-hybrid` / `amd` / `intel`
    yourself. On AMD this means *removing* the NVIDIA pins rather than adding anything —
